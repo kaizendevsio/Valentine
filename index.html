@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>A Question For You 💌</title>
+<title>Happy Valentine's Bubby 😍😘</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -395,7 +395,7 @@
   </div>
 
   <div id="questionView">
-    <div class="question">Will you be my<br>Valentine? 💕</div>
+    <div class="question">Happy Valentine's<br>my Bubby 😍😘</div>
     <div class="subtitle">Please pick wisely...</div>
     <div class="buttons" id="buttonsWrap">
       <button class="btn btn-yes" id="btnYes" onclick="sayYes()">Yes! 💖</button>
@@ -407,7 +407,7 @@
   <div class="success-wrap" id="successView">
     <span class="success-emoji">💕</span>
     <div class="success-text">Yaaay! 🥰</div>
-    <div class="success-sub">I knew you'd say yes!<br>Happy Valentine's Day! 💌</div>
+    <div class="success-sub">I knew you'd say yes, Bubby!<br>Happy Valentine's Day! 😍😘</div>
   </div>
 </div>
 
@@ -593,6 +593,72 @@
     }
 
     requestAnimationFrame(animate);
+
+    // Start heart rain
+    startHeartRain();
+  }
+
+  function startHeartRain() {
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    const hearts = [];
+    const heartEmojis = ['❤️', '💕', '💗', '💖', '💘', '💝', '♥️', '🩷'];
+
+    function spawnHeart() {
+      hearts.push({
+        x: Math.random() * canvas.width,
+        y: -30,
+        size: 14 + Math.random() * 22,
+        speed: 1.5 + Math.random() * 3,
+        sway: Math.random() * 2 - 1,
+        swaySpeed: 0.01 + Math.random() * 0.02,
+        swayOffset: Math.random() * Math.PI * 2,
+        rotation: Math.random() * 0.5 - 0.25,
+        emoji: heartEmojis[Math.floor(Math.random() * heartEmojis.length)],
+        opacity: 0.6 + Math.random() * 0.4,
+        time: 0
+      });
+    }
+
+    function animateRain() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Spawn new hearts
+      if (Math.random() < 0.3) spawnHeart();
+
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.time += 1;
+        h.y += h.speed;
+        h.x += Math.sin(h.time * h.swaySpeed + h.swayOffset) * h.sway;
+
+        if (h.y > canvas.height + 40) {
+          hearts.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.translate(h.x, h.y);
+        ctx.rotate(Math.sin(h.time * 0.02) * h.rotation);
+        ctx.globalAlpha = h.opacity;
+        ctx.font = h.size + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(h.emoji, 0, 0);
+        ctx.restore();
+      }
+
+      requestAnimationFrame(animateRain);
+    }
+
+    // Delay heart rain slightly so confetti hits first
+    setTimeout(() => {
+      // Pre-spawn some hearts
+      for (let i = 0; i < 12; i++) {
+        spawnHeart();
+        hearts[hearts.length - 1].y = Math.random() * canvas.height;
+      }
+      animateRain();
+    }, 1500);
   }
 </script>
 </body>
